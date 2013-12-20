@@ -30,20 +30,31 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = (
-    'django.contrib.admin',
-    'django.contrib.auth',
-    'django.contrib.contenttypes',
-    'django.contrib.sessions',
-    'django.contrib.messages',
+    #'django.contrib.admin',
+    #'django.contrib.auth',
+    #'django.contrib.contenttypes',
+    #'django.contrib.sessions',
+    #'django.contrib.messages',
     'django.contrib.staticfiles',
+    'rest_framework',
+    'rest'
 )
 
+REST_FRAMEWORK = {
+    'DEFAULT_PERMISSIONS_CLASSES' : ('rest_framework.permissions.AllowAny', ),
+    'PAGINATE_BY': 10,
+    'PAGINATE_BY_PARAM': 'limit',
+    'MAX_PAGINATE_BY': 25
+}
+
+CASSANDRA_NODES = ('134.53.148.102', )
+
 MIDDLEWARE_CLASSES = (
-    'django.contrib.sessions.middleware.SessionMiddleware',
+    #'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
-    'django.contrib.auth.middleware.AuthenticationMiddleware',
-    'django.contrib.messages.middleware.MessageMiddleware',
+    #'django.contrib.auth.middleware.AuthenticationMiddleware',
+    #'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 )
 
@@ -54,13 +65,16 @@ WSGI_APPLICATION = 'users.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/1.6/ref/settings/#databases
-
+# Empty Database as we will be using Cassandra
+DATABASES = {}
+'''
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
     }
 }
+'''
 
 # Internationalization
 # https://docs.djangoproject.com/en/1.6/topics/i18n/
