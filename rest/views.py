@@ -2,7 +2,7 @@ from django.shortcuts import render
 
 # Create your views here.
 from django.http import HttpResponse
-from users.models import User
+from rest.models import User
 from users.serializers import UserSerializer
 from rest_framework.views import APIView
 from rest_framework.response import Response
