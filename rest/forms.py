@@ -26,7 +26,7 @@ class UserPutForm(forms.Form):
         self.cleaned_data['premium'] = self.cleaned_data['premium'] if 'premium' in self.cleaned_data else False
         self.cleaned_data['active'] = self.cleaned_data['active'] if 'active' in self.cleaned_data else True
         self.cleaned_data['facebook'] = self.cleaned_data['facebook'] if 'facebook' in self.cleaned_data else False
-        self.cleaned_data['password'] = md5.new(self.cleaned_data['password']).digest()
+        self.cleaned_data['password'] = str(md5.new(self.cleaned_data['password']).digest())
         return self.cleaned_data
     
     '''
