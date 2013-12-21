@@ -43,7 +43,6 @@ INSTALLED_APPS = (
 REST_FRAMEWORK = {
     'DEFAULT_PERMISSIONS_CLASSES' : ('rest_framework.permissions.AllowAny', ),
     'PAGINATE_BY': 10,
-    'PAGINATE_BY_PARAM': 'limit',
     'MAX_PAGINATE_BY': 25
 }
 

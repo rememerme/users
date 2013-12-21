@@ -1,5 +1,8 @@
 from django.conf.urls import patterns, include, url
 
-urlpatterns = patterns('rest.views',
-    url(r'^$', 'index'),
+from rest import views
+
+urlpatterns = patterns('',
+    url(r'^/$', views.UsersListView.as_view()),
+    url(r'^$', views.UsersListView.as_view())
 )

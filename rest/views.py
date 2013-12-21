@@ -9,6 +9,8 @@ from rest_framework.response import Response
 from rest_framework import status
 import pycassa
 from django.conf import settings
+from rest.forms import UserGetListForm
+from users.util import BadRequestException
 
 
 def index(request):
@@ -18,17 +20,19 @@ class UsersListView(APIView):
     '''
        Used for searching by properties or listing all users available.
     '''
-    def get(self, request, format=None):
-        pool = pycassa.ConnectionPool('users', server_list=settings.CASSANDRA_NODES)
-        userCF = pycassa.ColumnFamily(pool, 'user')
+    def get(self, request):
+        # get the offset and limit query parameters
+        form = UserGetListForm(request.QUERY_PARAMS)
         
-        userCF
-
-        pool.dispose()
-        return Response(UserSerializer(users, many=True).data)
+        if form.is_valid():
+            return Response(UserSerializer(form.submit(), many=True))
+        else:
+            raise BadRequestException()
+            
 
     '''
 
-    '''
-    def post(self, request, format=None):
+    
+    def post(self, request):
         pass
+    '''   
