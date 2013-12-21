@@ -7,7 +7,7 @@ import uuid
 # User model faked to use Cassandra
 
 class User(CassaModel):
-    id = models.IntegerField(primary_key=True)
+    user_id = models.IntegerField(primary_key=True)
     premium = models.BooleanField()
     email = models.TextField()
     username = models.TextField()
