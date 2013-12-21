@@ -64,7 +64,7 @@ class User(CassaModel):
         pool = pycassa.ConnectionPool('users', server_list=settings.CASSANDRA_NODES)
         table = pycassa.ColumnFamily(pool, 'user')
         new_user = uuid.uuid1()
-        table.insert(new_user, {'user_id': new_user })
+        table.insert(new_user, {'username': users})
         pool.dispose()
 
     
