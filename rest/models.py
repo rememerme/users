@@ -60,7 +60,7 @@ class User(CassaModel):
         @param users: The set of users to save to the user store.  
     '''
     @staticmethod
-    def save(self, users):
+    def save(users):
         pool = pycassa.ConnectionPool('users', server_list=settings.CASSANDRA_NODES)
         table = pycassa.ColumnFamily(pool, 'user')
         new_user = str(uuid.uuid4())
