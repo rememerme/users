@@ -1,6 +1,8 @@
 from users.util import CassaModel
 from django.db import models
 import pycassa
+from django.conf import settings
+import uuid
 
 # User model faked to use Cassandra
 
@@ -59,7 +61,11 @@ class User(CassaModel):
     '''
     @staticmethod
     def save(self, users):
-        pass
+        pool = pycassa.ConnectionPool('users', server_list=settings.CASSANDRA_NODES)
+        table = pycassa.ColumnFamily(pool, 'user')
+        new_user = str(uuid.uuid4())
+        table.insert(new_user, {'id': new_user })
+
     
     
     
