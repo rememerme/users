@@ -31,9 +31,6 @@ class UsersListView(APIView):
             raise BadRequestException()
             
 
-    
-
-    
     def post(self, request):
         form = UserPutForm(request.DATA)
 
