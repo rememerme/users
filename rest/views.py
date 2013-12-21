@@ -9,8 +9,9 @@ from rest_framework.response import Response
 from rest_framework import status
 import pycassa
 from django.conf import settings
-from rest.forms import UserGetListForm
+from rest.forms import UserGetListForm, UserPutForm
 from users.util import BadRequestException
+import json
 
 
 def index(request):
@@ -30,9 +31,14 @@ class UsersListView(APIView):
             raise BadRequestException()
             
 
-    '''
+    
 
     
     def post(self, request):
-        pass
-    '''   
+        form = UserPutForm(request.DATA)
+
+        if form.is_valid():
+            return Response(json.dumps(form.submit()))
+        else:
+            raise BadRequestException()
+    

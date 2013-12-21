@@ -5,6 +5,7 @@ from django.conf import settings
 import uuid
 
 # User model faked to use Cassandra
+POOL = pycassa.ConnectionPool('users', server_list=settings.CASSANDRA_NODES)
 
 class User(CassaModel):
     user_id = models.IntegerField(primary_key=True)
@@ -12,7 +13,6 @@ class User(CassaModel):
     email = models.TextField()
     username = models.TextField()
     facebook = models.BooleanField()
-    
     '''
         Gets the user given an ID.
         
@@ -61,11 +61,13 @@ class User(CassaModel):
     '''
     @staticmethod
     def save(users):
-        pool = pycassa.ConnectionPool('users', server_list=settings.CASSANDRA_NODES)
-        table = pycassa.ColumnFamily(pool, 'user')
-        new_user = uuid.uuid1()
-        table.insert(new_user, {'username': users})
-        pool.dispose()
+        if not isinstance(users,list):
+            users = [users]
+
+        for user in users:
+            table = pycassa.ColumnFamily(POOL, 'user')
+            new_user = uuid.uuid1()
+            table.insert(new_user, user)
 
     
     
