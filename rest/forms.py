@@ -45,7 +45,7 @@ class UserPutForm(forms.Form):
         user = User.fromMap(self.cleaned_data)
         # check if username and email have not been used yet
         # if they have not then save the user
-        if User.getByEmail(user.email) or User.getByID(user.user_id):
+        if User.getByEmail(user.email) or User.getByUsername(user.username):
             raise UserConflictException()
         
         user.save()
