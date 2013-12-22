@@ -8,7 +8,7 @@
 '''
 from django import forms
 from users.util import getOffsetLimit
-import os
+import bcrypt
 from models import User
 from users import util
 from users.util import UserConflictException
@@ -28,7 +28,7 @@ class UserPutForm(forms.Form):
         self.cleaned_data['premium'] = self.cleaned_data['premium'] if 'premium' in self.cleaned_data else False
         self.cleaned_data['active'] = self.cleaned_data['active'] if 'active' in self.cleaned_data else True
         self.cleaned_data['facebook'] = self.cleaned_data['facebook'] if 'facebook' in self.cleaned_data else False
-        self.cleaned_data['salt'] = os.urandom(12)
+        self.cleaned_data['salt'] = bcrypt.gensalt()
         self.cleaned_data['password'] = util.hash_password(self.cleaned_data['password'], self.cleaned_data['salt'])
         return self.cleaned_data
     
