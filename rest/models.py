@@ -1,5 +1,4 @@
 from users.util import CassaModel
-from rest.serializers import CassaUserSerializer
 from django.db import models
 import pycassa
 from django.conf import settings
