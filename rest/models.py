@@ -85,7 +85,7 @@ class User(CassaModel):
 class CassaUserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ('username', 'email', 'salt', 'password', 'active', 'facebook', 'premium')
+        fields = ('username', 'email', 'password', 'active', 'facebook', 'premium')
 
     
     
