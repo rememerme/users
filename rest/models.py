@@ -18,6 +18,7 @@ class User(CassaModel):
     salt = models.TextField()
     password = models.TextField()
     facebook = models.BooleanField()
+    active = models.BooleanField()
     
     '''
         Creates a User object from a map object with the properties.
