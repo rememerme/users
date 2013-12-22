@@ -11,7 +11,7 @@ POOL = pycassa.ConnectionPool('users', server_list=settings.CASSANDRA_NODES)
 class User(CassaModel):
     table = pycassa.ColumnFamily(POOL, 'user')
     
-    user_id = models.IntegerField(primary_key=True)
+    user_id = models.TextField(primary_key=True)
     premium = models.BooleanField()
     email = models.TextField()
     username = models.TextField()
@@ -28,6 +28,13 @@ class User(CassaModel):
         return User(**mapRep)
     
     
+    @staticmethod
+    def fromCassa(cassRep):
+        mapRep = {key : val for key, val in cassRep[1].iteritems()}
+        mapRep['user_id'] = str(cassRep[0])
+        
+        return User.fromMap(mapRep)
+    
     '''
         Gets the user given an ID.
         
@@ -35,7 +42,7 @@ class User(CassaModel):
     '''
     @staticmethod
     def getByID(user_id):
-        User
+        return User.fromCassa(User.table.get(user_id))
     
     '''
         Gets the user given a username.
@@ -44,7 +51,14 @@ class User(CassaModel):
     '''
     @staticmethod
     def getByUsername(username):
-        pass
+        expr = pycassa.create_index_expression('username', username)
+        clause = pycassa.create_index_clause([expr], count=1)
+        ans = list(User.table.get_indexed_slices(clause))
+        
+        if len(ans) == 0:
+            return None
+        
+        return User.fromCassa(ans[0])
     
     '''
         Gets the user by the email.
@@ -53,7 +67,14 @@ class User(CassaModel):
     '''
     @staticmethod
     def getByEmail(email):
-        pass
+        expr = pycassa.create_index_expression('email', email)
+        clause = pycassa.create_index_clause([expr], count=1)
+        ans = list(User.table.get_indexed_slices(clause))
+        
+        if len(ans) == 0:
+            return None
+        
+        return User.fromCassa(ans[0])
     
     '''
         Gets all of the users and uses an offset and limit if
@@ -75,7 +96,7 @@ class User(CassaModel):
         @param users: The set of users to save to the user store.  
     '''
     def save(self):
-        user_id = uuid.uuid1() if not self.user_id else self.user_id
+        user_id = uuid.uuid1() if not self.user_id else uuid.UUID(self.user_id)
         User.table.insert(user_id, CassaUserSerializer(self).data)
         
 '''
