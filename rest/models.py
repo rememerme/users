@@ -98,6 +98,7 @@ class User(CassaModel):
     def save(self):
         user_id = uuid.uuid1() if not self.user_id else uuid.UUID(self.user_id)
         User.table.insert(user_id, CassaUserSerializer(self).data)
+        self.user_id = user_id
         
 '''
     The User serializer used to create a python dictionary for submitting to the
