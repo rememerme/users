@@ -48,7 +48,7 @@ class UserPutForm(forms.Form):
         if User.getByEmail(user.email) or User.getByID(user.user_id):
             raise UserConflictException()
         
-        user.save(self.cleaned_data)
+        user.save()
         return user
         
 class UserGetListForm(forms.Form):
