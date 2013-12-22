@@ -31,7 +31,7 @@ class UsersListView(APIView):
         form = UserPutForm(request.DATA)
 
         if form.is_valid():
-            return Response(UserSerializer(form.submit()))
+            return Response(UserSerializer(form.submit()).data)
         else:
             raise BadRequestException()
     
