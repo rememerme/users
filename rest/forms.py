@@ -8,8 +8,10 @@
 '''
 from django import forms
 from users.util import getOffsetLimit
-import md5
+import os
 from models import User
+from users import util
+from users.util import UserConflictException
 
 class UserPutForm(forms.Form):
     username = forms.CharField(required=True)
@@ -26,7 +28,8 @@ class UserPutForm(forms.Form):
         self.cleaned_data['premium'] = self.cleaned_data['premium'] if 'premium' in self.cleaned_data else False
         self.cleaned_data['active'] = self.cleaned_data['active'] if 'active' in self.cleaned_data else True
         self.cleaned_data['facebook'] = self.cleaned_data['facebook'] if 'facebook' in self.cleaned_data else False
-        #self.cleaned_data['password'] = str(md5.new(self.cleaned_data['password']).digest())
+        self.cleaned_data['salt'] = os.urandom(12)
+        self.cleaned_data['password'] = util.hash_password(self.cleaned_data['password'], self.cleaned_data['salt'])
         return self.cleaned_data
     
     '''
@@ -39,8 +42,14 @@ class UserPutForm(forms.Form):
         @return: A list of users matching the query with the given offset/limit
     '''
     def submit(self):
-        User.save(self.cleaned_data)
-        return self.cleaned_data
+        user = User.fromMap(self.cleaned_data)
+        # check if username and email have not been used yet
+        # if they have not then save the user
+        if User.getByEmail(user.email) or User.getByID(user.user_id):
+            raise UserConflictException()
+        
+        user.save(self.cleaned_data)
+        return user
         
 class UserGetListForm(forms.Form):
     offset = forms.IntegerField(required=False)

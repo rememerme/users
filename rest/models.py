@@ -1,4 +1,5 @@
 from users.util import CassaModel
+from rest.serializers import CassaUserSerializer
 from django.db import models
 import pycassa
 from django.conf import settings
@@ -8,11 +9,24 @@ import uuid
 POOL = pycassa.ConnectionPool('users', server_list=settings.CASSANDRA_NODES)
 
 class User(CassaModel):
+    table = pycassa.ColumnFamily(POOL, 'user')
+    
     user_id = models.IntegerField(primary_key=True)
     premium = models.BooleanField()
     email = models.TextField()
     username = models.TextField()
+    salt = models.TextField()
+    password = models.TextField()
     facebook = models.BooleanField()
+    
+    '''
+        Creates a User object from a map object with the properties.
+    '''
+    @staticmethod
+    def fromMap(mapRep):
+        return User(**mapRep)
+    
+    
     '''
         Gets the user given an ID.
         
@@ -20,7 +34,7 @@ class User(CassaModel):
     '''
     @staticmethod
     def getByID(user_id):
-        pass
+        User
     
     '''
         Gets the user given a username.
@@ -59,15 +73,9 @@ class User(CassaModel):
         
         @param users: The set of users to save to the user store.  
     '''
-    @staticmethod
-    def save(users):
-        if not isinstance(users,list):
-            users = [users]
-
-        for user in users:
-            table = pycassa.ColumnFamily(POOL, 'user')
-            new_user = uuid.uuid1()
-            table.insert(new_user, user)
+    def save(self):
+        user_id = uuid.uuid1() if not self.user_id else self.user_id
+        User.table.insert(user_id, CassaUserSerializer(self).data)
 
     
     

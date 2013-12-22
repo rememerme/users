@@ -13,10 +13,6 @@ from rest.forms import UserGetListForm, UserPutForm
 from users.util import BadRequestException
 import json
 
-
-def index(request):
-    return HttpResponse("Hello, world. You're at the polls index.")
-
 class UsersListView(APIView):
     '''
        Used for searching by properties or listing all users available.
@@ -35,7 +31,7 @@ class UsersListView(APIView):
         form = UserPutForm(request.DATA)
 
         if form.is_valid():
-            return Response(form.submit())
+            return Response(UserSerializer(form.submit()))
         else:
             raise BadRequestException()
     

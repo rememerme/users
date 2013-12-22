@@ -10,6 +10,7 @@
 from django.conf import settings
 from rest_framework.exceptions import APIException
 from django.db import models
+import hashlib
 
 '''
     Gets the correct value for the offset and limit based on the application
@@ -31,6 +32,13 @@ def getOffsetLimit(request):
         offset = request.QUERY_PARAMS['offset']
     
     return offset, limit
+
+'''
+    Hashes a password with the given salt. If no salt is provided, the salt that will be
+    used is an empty string.
+'''
+def hash_password(password, salt=''):
+    return hashlib.sha256(salt + password).hexdigest()
 
 '''
     Model that we can use to get rid of the Django stuff, but still use the model
@@ -61,4 +69,11 @@ class CassaModel(models.Model):
 '''
 class BadRequestException(APIException):
     status_code = 400
-    detail = "A Bad Request was made for the API. Revise input parameters." 
+    detail = "A Bad Request was made for the API. Revise input parameters."
+    
+'''
+
+'''
+class UserConflictException(APIException):
+    status_code = 409
+    detail = "The user requested for creation already exists"
