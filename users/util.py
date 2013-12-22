@@ -38,6 +38,9 @@ def getOffsetLimit(request):
     used is an empty string.
 '''
 def hash_password(password, salt=''):
+    password = password.encode('utf8') if isinstance(password, unicode) else password
+    salt = salt.encode('utf8') if isinstance(salt, unicode) else salt
+    
     return hashlib.sha256(salt + password).hexdigest()
 
 '''
