@@ -41,7 +41,7 @@ def hash_password(password, salt=''):
     password = password.encode('utf8') if isinstance(password, unicode) else password
     salt = salt.encode('utf8') if isinstance(salt, unicode) else salt
     
-    return hashlib.sha256(salt + password).hexdigest()
+    return unicode(hashlib.sha256(salt + password).hexdigest())
 
 '''
     Model that we can use to get rid of the Django stuff, but still use the model
