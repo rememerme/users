@@ -4,6 +4,7 @@ from django.db import models
 import pycassa
 from django.conf import settings
 import uuid
+from rest_framework import serializers
 
 # User model faked to use Cassandra
 POOL = pycassa.ConnectionPool('users', server_list=settings.CASSANDRA_NODES)
@@ -76,6 +77,15 @@ class User(CassaModel):
     def save(self):
         user_id = uuid.uuid1() if not self.user_id else self.user_id
         User.table.insert(user_id, CassaUserSerializer(self).data)
+        
+'''
+    The User serializer used to create a python dictionary for submitting to the
+    Cassandra database with the correct options.
+'''
+class CassaUserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ('username', 'email', 'salt', 'password', 'active', 'facebook', 'premium')
 
     
     
