@@ -18,8 +18,8 @@ import hashlib
     
     @param request: The request being made to the server
 '''
-def getOffsetLimit(request):
-    offset, limit = 0, settings.REST_FRAMEWORK.PAGINATE_BY
+def getLimit(request):
+    limit = settings.REST_FRAMEWORK.PAGINATE_BY
     
     # gets the limit of the request and defaults to the maximum if the limit passed is too big
     # also if no limit is sent then the limit in the settings is used
@@ -27,11 +27,7 @@ def getOffsetLimit(request):
         maxLimit = settings.REST_FRAMEWORK.MAX_PAGINATE_BY
         limit = maxLimit if request.QUERY_PARAMS['limit'] > maxLimit else request.QUERY_PARAMS['limit']
     
-    # gets the offset of the request and defaults to 0
-    if 'offset' in request.QUERY_PARAMS:
-        offset = request.QUERY_PARAMS['offset']
-    
-    return offset, limit
+    return limit
 
 '''
     Hashes a password with the given salt. If no salt is provided, the salt that will be

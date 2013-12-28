@@ -7,7 +7,7 @@
     @author: Andrew Oberlin
 '''
 from django import forms
-from users.util import getOffsetLimit
+from users.util import getLimit
 import bcrypt
 from models import User
 from users import util
@@ -52,7 +52,7 @@ class UserPutForm(forms.Form):
         return user
         
 class UserGetListForm(forms.Form):
-    offset = forms.IntegerField(required=False)
+    page = forms.CharField(required=False)
     limit = forms.IntegerField(required=False)
     username = forms.CharField(required=False)
     email = forms.EmailField(required=False)
@@ -61,7 +61,8 @@ class UserGetListForm(forms.Form):
         Overriding the clean method to add the default offset and limiting information.
     '''
     def clean(self):
-        self.cleaned_data['offset'], self.cleaned_data['limit'] = getOffsetLimit(self.cleaned_data)
+        self.cleaned_data['limit'] = getLimit(self.cleaned_data)
+        self.cleaned_data['page'] = None if not self.cleaned_data['page'] else self.cleaned_data['page']
         return self.cleaned_data
     
     '''
@@ -79,5 +80,5 @@ class UserGetListForm(forms.Form):
         elif 'email' in self.cleaned_data:
             return [User.getByEmail(self.cleaned_data['email'])]
         else:
-            return User.all(offset=self.cleaned_data['offset'], limit=self.cleaned_data['limit'])
+            return User.all(page=self.cleaned_data['page'], limit=self.cleaned_data['limit'])
         

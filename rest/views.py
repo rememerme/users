@@ -2,7 +2,6 @@ from django.shortcuts import render
 
 # Create your views here.
 from django.http import HttpResponse
-from rest.models import User
 from rest.serializers import UserSerializer
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -11,7 +10,6 @@ import pycassa
 from django.conf import settings
 from rest.forms import UserGetListForm, UserPutForm
 from users.util import BadRequestException
-import json
 
 class UsersListView(APIView):
     '''

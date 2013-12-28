@@ -86,8 +86,15 @@ class User(CassaModel):
             returned by the query.
     '''
     @staticmethod
-    def all(offset=None, limit=None):
-        pass
+    def all(limit=settings.REST_FRAMEWORK.PAGINATE_BY, pageKey=None):
+        if not pageKey:
+            return [User.fromCassa(cassRep) for cassRep in User.table.get_range(row_count=limit)]
+        else:
+            if not isinstance(pageKey, uuid.UUID):
+                pageKey = uuid.UUID(pageKey)
+            gen = User.table.get_range(start=pageKey, row_count=limit + 1)
+            gen.next()
+            return [User.fromCassa(cassRep) for cassRep in gen]
     
     '''
         Saves a set of users given by the cassandra in/output, which is
