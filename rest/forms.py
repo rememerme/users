@@ -12,6 +12,7 @@ import bcrypt
 from models import User
 from users import util
 from users.util import UserConflictException
+from rest.serializers import UserSerializer
 
 class UserPutForm(forms.Form):
     username = forms.CharField(required=True)
@@ -84,10 +85,19 @@ class UserGetListForm(forms.Form):
     def submit(self):
         if 'username' in self.cleaned_data:
             ans = User.getByUsername(self.cleaned_data['username'])
-            return [] if not ans else [ans]
+            uResponse = UserSerializer([] if not ans else [ans], many=True).data
+            response = { 'data' : uResponse }
+            return response
         elif 'email' in self.cleaned_data:
             ans = User.getByEmail(self.cleaned_data['email'])
-            return [] if not ans else [ans]
+            uResponse = UserSerializer([] if not ans else [ans], many=True).data
+            response = { 'data' : uResponse }
+            return response
         else:
-            return User.all(page=self.cleaned_data['page'], limit=self.cleaned_data['limit'])
+            ans = User.all(page=self.cleaned_data['page'], limit=self.cleaned_data['limit'])
+            uResponse = UserSerializer(ans, many=True).data
+            response = { 'data' : uResponse }
+            if uResponse:
+                response['next'] = uResponse[-1].user_id
+            return response
         

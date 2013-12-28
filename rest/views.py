@@ -20,7 +20,7 @@ class UsersListView(APIView):
         form = UserGetListForm(request.QUERY_PARAMS)
         
         if form.is_valid():
-            return Response(UserSerializer(form.submit(), many=True).data)
+            return Response(form.submit())
         else:
             raise BadRequestException()
             
