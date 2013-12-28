@@ -86,13 +86,13 @@ class User(CassaModel):
             returned by the query.
     '''
     @staticmethod
-    def all(limit=settings.REST_FRAMEWORK['PAGINATE_BY'], pageKey=None):
-        if not pageKey:
+    def all(limit=settings.REST_FRAMEWORK['PAGINATE_BY'], page=None):
+        if not page:
             return [User.fromCassa(cassRep) for cassRep in User.table.get_range(row_count=limit)]
         else:
-            if not isinstance(pageKey, uuid.UUID):
-                pageKey = uuid.UUID(pageKey)
-            gen = User.table.get_range(start=pageKey, row_count=limit + 1)
+            if not isinstance(page, uuid.UUID):
+                page = uuid.UUID(page)
+            gen = User.table.get_range(start=page, row_count=limit + 1)
             gen.next()
             return [User.fromCassa(cassRep) for cassRep in gen]
     
