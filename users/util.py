@@ -23,9 +23,9 @@ def getLimit(request):
     
     # gets the limit of the request and defaults to the maximum if the limit passed is too big
     # also if no limit is sent then the limit in the settings is used
-    if 'limit' in request.QUERY_PARAMS:
+    if 'limit' in request:
         maxLimit = settings.REST_FRAMEWORK['MAX_PAGINATE_BY']
-        limit = maxLimit if request.QUERY_PARAMS['limit'] > maxLimit else request.QUERY_PARAMS['limit']
+        limit = maxLimit if request['limit'] > maxLimit else request['limit']
     
     return limit
 
