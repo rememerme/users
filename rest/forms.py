@@ -76,9 +76,11 @@ class UserGetListForm(forms.Form):
     '''
     def submit(self):
         if 'username' in self.cleaned_data:
-            return [User.getByUsername(self.cleaned_data['username'])]
+            ans = User.getByUsername(self.cleaned_data['username'])
+            return [] if not ans else [ans]
         elif 'email' in self.cleaned_data:
-            return [User.getByEmail(self.cleaned_data['email'])]
+            ans = User.getByEmail(self.cleaned_data['email'])
+            return [] if not ans else [ans]
         else:
             return User.all(page=self.cleaned_data['page'], limit=self.cleaned_data['limit'])
         

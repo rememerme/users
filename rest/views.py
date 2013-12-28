@@ -20,10 +20,7 @@ class UsersListView(APIView):
         form = UserGetListForm(request.QUERY_PARAMS)
         
         if form.is_valid():
-            ans = form.submit()
-            if not ans:
-                return Response([])
-            return Response(UserSerializer(ans, many=True).data)
+            return Response(UserSerializer(form.submit(), many=True).data)
         else:
             raise BadRequestException()
             
@@ -32,10 +29,7 @@ class UsersListView(APIView):
         form = UserPutForm(request.DATA)
 
         if form.is_valid():
-            ans = form.submit()
-            if not ans:
-                return Response([])
-            return Response(UserSerializer(ans).data)
+            return Response(UserSerializer(form.submit()).data)
         else:
             raise BadRequestException()
     
