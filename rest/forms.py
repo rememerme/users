@@ -97,7 +97,7 @@ class UserGetListForm(forms.Form):
             ans = User.all(page=self.cleaned_data['page'], limit=self.cleaned_data['limit'])
             uResponse = UserSerializer(ans, many=True).data
             response = { 'data' : uResponse }
-            if uResponse:
-                response['next'] = uResponse[-1].user_id
+            if ans:
+                response['next'] = ans[-1].user_id
             return response
         
