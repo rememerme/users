@@ -63,6 +63,13 @@ class UserGetListForm(forms.Form):
     def clean(self):
         self.cleaned_data['limit'] = getLimit(self.cleaned_data)
         self.cleaned_data['page'] = None if not self.cleaned_data['page'] else self.cleaned_data['page']
+        # remove the parameters from the cleaned data if they are empty
+        if not self.cleaned_data['username']:
+            del self.cleaned_data['username']
+            
+        if not self.cleaned_data['email']:
+            del self.cleaned_data['email']
+        
         return self.cleaned_data
     
     '''
