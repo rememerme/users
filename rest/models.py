@@ -86,7 +86,7 @@ class User(CassaModel):
             returned by the query.
     '''
     @staticmethod
-    def all(limit=settings.REST_FRAMEWORK.PAGINATE_BY, pageKey=None):
+    def all(limit=settings.REST_FRAMEWORK['PAGINATE_BY'], pageKey=None):
         if not pageKey:
             return [User.fromCassa(cassRep) for cassRep in User.table.get_range(row_count=limit)]
         else:
