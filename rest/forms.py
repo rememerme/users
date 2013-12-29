@@ -11,10 +11,10 @@ from users.util import getLimit
 import bcrypt
 from models import User
 from users import util
-from users.util import UserConflictException
+from rest.exceptions import UserConflictException, UserNotFoundException
 from rest.serializers import UserSerializer
 
-class UserPutForm(forms.Form):
+class UserPostForm(forms.Form):
     username = forms.CharField(required=True)
     email = forms.EmailField(required=True)
     password = forms.CharField(required=True)
@@ -100,4 +100,18 @@ class UserGetListForm(forms.Form):
             if ans:
                 response['next'] = ans[-1].user_id
             return response
+        
+class UserGetSingleForm(forms.Form):
+    user_id = forms.CharField(required=True)
+    
+    '''
+        Submits a form to retrieve a user given the user_id.
+        
+        @return: A user with the given user_id
+    '''
+    def submit(self):
+        ans = User.getByID(self.cleaned_data['user_id'])
+        if not ans:
+            raise UserNotFoundException()
+        return UserSerializer(ans).data
         

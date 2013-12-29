@@ -8,7 +8,6 @@
 '''
 
 from django.conf import settings
-from rest_framework.exceptions import APIException
 from django.db import models
 import hashlib
 
@@ -62,17 +61,3 @@ class CassaModel(models.Model):
     
     class Meta:
         app_label = u'users'
-
-'''
-    Bad Request Exception.
-'''
-class BadRequestException(APIException):
-    status_code = 400
-    detail = "A Bad Request was made for the API. Revise input parameters."
-    
-'''
-
-'''
-class UserConflictException(APIException):
-    status_code = 409
-    detail = "The user requested for creation already exists"
