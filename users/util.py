@@ -52,6 +52,16 @@ class CassaModel(models.Model):
         pass
     
     '''
+        Updates this user with the values put into the map.
+        
+        @param other: The map of values to use for updating the model.
+    '''
+    def update(self, other):
+        for attrKey in self.__dict__.keys():
+            if attrKey in other:
+                setattr(self, attrKey, other[attrKey])
+    
+    '''
         Overriding the default delete method to remove Django operation.
         
         This delete will do nothing and will not be used.

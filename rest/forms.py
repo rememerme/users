@@ -11,7 +11,7 @@ from users.util import getLimit
 import bcrypt
 from models import User
 from users import util
-from rest.exceptions import UserConflictException, UserNotFoundException
+from rest.exceptions import UserConflictException, UserNotFoundException, UserAuthorizationException
 from rest.serializers import UserSerializer
 from uuid import UUID
 from pycassa.cassandra.ttypes import NotFoundException as CassaNotFoundException
@@ -20,16 +20,14 @@ class UserPostForm(forms.Form):
     username = forms.CharField(required=True)
     email = forms.EmailField(required=True)
     password = forms.CharField(required=True)
-    premium = forms.BooleanField(required=False)
     facebook = forms.BooleanField(required=False)
-    active = forms.BooleanField(required=False)
 
     '''
         Overriding the clean method to add the default offset and limiting information.
     '''
     def clean(self):
-        self.cleaned_data['premium'] = self.cleaned_data['premium'] if 'premium' in self.cleaned_data else False
-        self.cleaned_data['active'] = self.cleaned_data['active'] if 'active' in self.cleaned_data else True
+        self.cleaned_data['premium'] = False
+        self.cleaned_data['active'] = True
         self.cleaned_data['facebook'] = self.cleaned_data['facebook'] if 'facebook' in self.cleaned_data else False
         self.cleaned_data['salt'] = bcrypt.gensalt()
         self.cleaned_data['password'] = util.hash_password(self.cleaned_data['password'], self.cleaned_data['salt'])
@@ -52,7 +50,7 @@ class UserPostForm(forms.Form):
             raise UserConflictException()
         
         user.save()
-        return user
+        return UserSerializer(user).data
         
 class UserGetListForm(forms.Form):
     page = forms.CharField(required=False)
@@ -127,4 +125,63 @@ class UserGetSingleForm(forms.Form):
         except CassaNotFoundException:
             raise UserNotFoundException()
         return UserSerializer(ans).data
+    
+class UserPutForm(forms.Form):
+    username = forms.CharField(required=False)
+    email = forms.EmailField(required=False)
+    password = forms.CharField(required=False)
+    old_password = forms.CharField(required=True)
+    facebook = forms.BooleanField(required=False, initial=None)
+    user_id = forms.CharField(required=True)
+    
+    def clean(self):
+        try:
+            self.cleaned_data['user_id'] = UUID(self.cleaned_data['user_id'])
+        except ValueError:
+            raise UserNotFoundException()
+        
+        if not self.cleaned_data['username']: del self.cleaned_data['username']
+        
+        if not self.cleaned_data['email']: del self.cleaned_data['email']
+            
+        if not self.cleaned_data['password']:
+            del self.cleaned_data['password']
+            
+        if not self.cleaned_data['email']: del self.cleaned_data['email']
+        
+        if self.cleaned_data['facebook'] == None: del self.cleaned_data['facebook']
+        
+        return self.cleaned_data
+    
+    def submit(self):
+        user_id = self.cleaned_data['user_id']
+        del self.cleaned_data['user_id']
+        
+        # get the original user
+        try:
+            user = User.get(user_id)
+        except CassaNotFoundException:
+            raise UserNotFoundException()
+        
+        if util.hash_password(self.cleaned_data['old_password'], user.salt) == user.password:
+            if not self.cleaned_data: # no real changes made
+                return UserSerializer(user).data
+        
+            # check to see username or email are being changed
+            # if they are maintain the uniqueness
+            if 'username' in self.cleaned_data:
+                if user.username != self.cleaned_data['username'] and User.get(username=self.cleaned_data['username']):
+                    raise UserConflictException()
+            
+            if 'email' in self.cleaned_data:
+                if user.email != self.cleaned_data['email'] and User.get(email=self.cleaned_data['email']):
+                    raise UserConflictException()   
+            
+            user.update(self.cleaned_data)
+            user.save()
+        else:
+            raise UserAuthorizationException()
+        
+        return UserSerializer(user).data
+    
         

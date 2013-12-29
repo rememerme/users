@@ -8,7 +8,7 @@ from rest_framework.response import Response
 from rest_framework import status
 import pycassa
 from django.conf import settings
-from rest.forms import UserGetListForm, UserPostForm, UserGetSingleForm
+from rest.forms import UserGetListForm, UserPostForm, UserPutForm, UserGetSingleForm
 from rest.exceptions import BadRequestException
 
 class UsersListView(APIView):
@@ -37,7 +37,7 @@ class UsersListView(APIView):
         form = UserPostForm(request.DATA)
 
         if form.is_valid():
-            return Response(UserSerializer(form.submit()).data)
+            return Response(form.submit())
         else:
             raise BadRequestException()
         
@@ -58,13 +58,15 @@ class UsersSingleView(APIView):
         else:
             raise BadRequestException()
             
-    '''
-    def put(self, request):
-        form = UserPostForm(request.DATA)
+    
+    def put(self, request, user_id):
+        '''
+            Used to update fields for a given user.
+        '''
+        form = UserPutForm(request.DATA)
 
         if form.is_valid():
-            return Response(UserSerializer(form.submit()).data)
+            return Response(form.submit())
         else:
             raise BadRequestException()
-    '''
     

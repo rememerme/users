@@ -27,13 +27,31 @@ class User(CassaModel):
     def fromMap(mapRep):
         return User(**mapRep)
     
-    
+    '''
+        Creates a User object from the tuple return from Cassandra.
+    '''
     @staticmethod
     def fromCassa(cassRep):
         mapRep = {key : val for key, val in cassRep[1].iteritems()}
         mapRep['user_id'] = str(cassRep[0])
         
         return User.fromMap(mapRep)
+    
+    '''
+        Method for getting single users from cassandra given the email, username or user_id.
+    '''
+    @staticmethod
+    def get(user_id=None, username=None, email=None):
+        if user_id:
+            return User.getByID(user_id)
+        
+        if username:
+            return User.getByUsername(username)
+        
+        if email:
+            return User.getByEmail(email)
+        
+        return None
     
     '''
         Gets the user given an ID.
@@ -108,6 +126,8 @@ class User(CassaModel):
         user_id = uuid.uuid1() if not self.user_id else uuid.UUID(self.user_id)
         User.table.insert(user_id, CassaUserSerializer(self).data)
         self.user_id = user_id
+        
+        
         
 '''
     The User serializer used to create a python dictionary for submitting to the

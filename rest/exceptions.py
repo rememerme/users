@@ -6,6 +6,13 @@ from rest_framework.exceptions import APIException
 class BadRequestException(APIException):
     status_code = 400
     detail = "A Bad Request was made for the API. Revise input parameters."
+
+'''
+
+'''
+class UserAuthorizationException(APIException):
+    status_code = 401
+    detail = "Incorrect password user password combination"
     
 '''
 
