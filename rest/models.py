@@ -42,6 +42,8 @@ class User(CassaModel):
     '''
     @staticmethod
     def getByID(user_id):
+        if not isinstance(user_id, uuid.UUID):
+            user_id = uuid.UUID(user_id)
         return User.fromCassa(User.table.get(user_id))
     
     '''

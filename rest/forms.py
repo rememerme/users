@@ -11,8 +11,10 @@ from users.util import getLimit
 import bcrypt
 from models import User
 from users import util
-from rest.exceptions import UserConflictException, UserNotFoundException
+from rest.exceptions import UserConflictException, UserNotFoundException, BadRequestException
 from rest.serializers import UserSerializer
+from uuid import UUID
+from pycassa.cassandra.ttypes import NotFoundException as CassaNotFoundException
 
 class UserPostForm(forms.Form):
     username = forms.CharField(required=True)
@@ -104,14 +106,24 @@ class UserGetListForm(forms.Form):
 class UserGetSingleForm(forms.Form):
     user_id = forms.CharField(required=True)
     
+    
+    def clean(self):
+        try:
+            self.cleaned_data['user_id'] = UUID(self.cleaned_data['user_id'])
+        except ValueError:
+            raise BadRequestException()
+    
     '''
         Submits a form to retrieve a user given the user_id.
         
         @return: A user with the given user_id
     '''
     def submit(self):
-        ans = User.getByID(self.cleaned_data['user_id'])
-        if not ans:
+        try:
+            ans = User.getByID(self.cleaned_data['user_id'])
+            if not ans:
+                raise UserNotFoundException()
+        except CassaNotFoundException:
             raise UserNotFoundException()
         return UserSerializer(ans).data
         
