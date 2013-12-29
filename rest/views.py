@@ -46,11 +46,12 @@ class UsersSingleView(APIView):
        Used for managing user properties, getting specific users and deleting users.
     '''
     
-    def get(self, request):
+    def get(self, request, user_id):
         '''
             Used to get a user by id.
         '''
         # get the offset and limit query parameters
+        request.DATA['user_id'] = user_id
         form = UserGetSingleForm(request.DATA)
         
         if form.is_valid():
