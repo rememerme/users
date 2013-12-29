@@ -63,7 +63,9 @@ class UsersSingleView(APIView):
         '''
             Used to update fields for a given user.
         '''
-        form = UserPutForm(request.DATA)
+        data = { key : request.DATA[key] for key in request.DATA }
+        data['user_id'] = user_id
+        form = UserPutForm(data)
 
         if form.is_valid():
             return Response(form.submit())
