@@ -110,6 +110,7 @@ class UserGetSingleForm(forms.Form):
     def clean(self):
         try:
             self.cleaned_data['user_id'] = UUID(self.cleaned_data['user_id'])
+            return self.cleaned_data
         except ValueError:
             raise BadRequestException()
     
