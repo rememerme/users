@@ -44,7 +44,7 @@ class User(CassaModel):
     def getByID(user_id):
         if not isinstance(user_id, uuid.UUID):
             user_id = uuid.UUID(user_id)
-        return User.fromCassa(User.table.get(user_id))
+        return User.fromCassa((str(user_id), User.table.get(user_id)))
     
     '''
         Gets the user given a username.
