@@ -51,8 +51,7 @@ class UsersSingleView(APIView):
             Used to get a user by id.
         '''
         # get the offset and limit query parameters
-        request.DATA['user_id'] = user_id
-        form = UserGetSingleForm(request.DATA)
+        form = UserGetSingleForm({ 'user_id' : user_id })
         
         if form.is_valid():
             return Response(form.submit())
