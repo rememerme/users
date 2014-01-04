@@ -130,7 +130,6 @@ class UserPutForm(forms.Form):
     username = forms.CharField(required=False)
     email = forms.EmailField(required=False)
     password = forms.CharField(required=False)
-    old_password = forms.CharField(required=True)
     facebook = forms.BooleanField(required=False, initial=None)
     user_id = forms.CharField(required=True)
     
@@ -139,7 +138,7 @@ class UserPutForm(forms.Form):
             self.cleaned_data['user_id'] = UUID(self.cleaned_data['user_id'])
         except ValueError:
             raise UserNotFoundException()
-        
+        '''
         if not self.cleaned_data['username']: del self.cleaned_data['username']
         
         if not self.cleaned_data['email']: del self.cleaned_data['email']
@@ -150,6 +149,7 @@ class UserPutForm(forms.Form):
         if not self.cleaned_data['email']: del self.cleaned_data['email']
         
         if self.cleaned_data['facebook'] == None: del self.cleaned_data['facebook']
+        '''
         
         return self.cleaned_data
     
@@ -163,24 +163,21 @@ class UserPutForm(forms.Form):
         except CassaNotFoundException:
             raise UserNotFoundException()
         
-        if util.hash_password(self.cleaned_data['old_password'], user.salt) == user.password:
-            if not self.cleaned_data: # no real changes made
-                return UserSerializer(user).data
+        if not self.cleaned_data: # no real changes made
+            return UserSerializer(user).data
+    
+        # check to see username or email are being changed
+        # if they are maintain the uniqueness
+        if 'username' in self.cleaned_data:
+            if user.username != self.cleaned_data['username'] and User.get(username=self.cleaned_data['username']):
+                raise UserConflictException()
         
-            # check to see username or email are being changed
-            # if they are maintain the uniqueness
-            if 'username' in self.cleaned_data:
-                if user.username != self.cleaned_data['username'] and User.get(username=self.cleaned_data['username']):
-                    raise UserConflictException()
-            
-            if 'email' in self.cleaned_data:
-                if user.email != self.cleaned_data['email'] and User.get(email=self.cleaned_data['email']):
-                    raise UserConflictException()   
-            
-            user.update(self.cleaned_data)
-            user.save()
-        else:
-            raise UserAuthorizationException()
+        if 'email' in self.cleaned_data:
+            if user.email != self.cleaned_data['email'] and User.get(email=self.cleaned_data['email']):
+                raise UserConflictException()   
+        
+        user.update(self.cleaned_data)
+        user.save()
         
         return UserSerializer(user).data
     
