@@ -175,6 +175,8 @@ class UserPutForm(forms.Form):
         user.update(self.cleaned_data)
         user.save()
         
+        return self.cleaned_data
+        
         return UserSerializer(user).data
     
         
