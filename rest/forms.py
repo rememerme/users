@@ -129,7 +129,6 @@ class UserPutForm(forms.Form):
     username = forms.CharField(required=False)
     email = forms.EmailField(required=False)
     password = forms.CharField(required=False)
-    facebook = forms.BooleanField(required=False)
     user_id = forms.CharField(required=True)
     
     def clean(self):
@@ -140,6 +139,10 @@ class UserPutForm(forms.Form):
             raise UserNotFoundException()
         
         if not cleaned_data['email']: del cleaned_data['email']
+        
+        if not cleaned_data['username']: del cleaned_data['username']
+        
+        if not cleaned_data['password']: del cleaned_data['password']
         
         return cleaned_data
     
