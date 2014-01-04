@@ -167,7 +167,10 @@ class UserPutForm(forms.Form):
         
         if 'email' in self.cleaned_data:
             if user.email != self.cleaned_data['email'] and User.get(email=self.cleaned_data['email']):
-                raise UserConflictException()   
+                raise UserConflictException()
+            
+        if 'password' in self.cleaned_data:
+            self.cleaned_data['password'] = util.hash_password(self.cleaned_data['password'], user.salt)
         
         user.update(self.cleaned_data)
         user.save()
