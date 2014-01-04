@@ -127,31 +127,27 @@ class UserGetSingleForm(forms.Form):
         return UserSerializer(ans).data
     
 class UserPutForm(forms.Form):
-    username = forms.CharField(required=False)
-    email = forms.EmailField(required=False)
-    password = forms.CharField(required=False)
+    username = forms.CharField(required=False, initial=None)
+    email = forms.EmailField(required=False, initial=None)
+    password = forms.CharField(required=False, initial=None)
     facebook = forms.BooleanField(required=False, initial=None)
     user_id = forms.CharField(required=True)
     
     def clean(self):
+        cleaned_data = super(UserPutForm, self).clean()
         try:
-            self.cleaned_data['user_id'] = UUID(self.cleaned_data['user_id'])
+            cleaned_data['user_id'] = UUID(cleaned_data['user_id'])
         except ValueError:
             raise UserNotFoundException()
-        '''
-        if not self.cleaned_data['username']: del self.cleaned_data['username']
         
-        if not self.cleaned_data['email']: del self.cleaned_data['email']
-            
-        if not self.cleaned_data['password']:
-            del self.cleaned_data['password']
-            
-        if not self.cleaned_data['email']: del self.cleaned_data['email']
+        for key, value in cleaned_data.items():
+            if not value and key in self.initial:
+                if self.initial != None:
+                    cleaned_data[key] = self.initial[key]
+                else:
+                    del cleaned_data[key]
         
-        if self.cleaned_data['facebook'] == None: del self.cleaned_data['facebook']
-        '''
-        
-        return self.cleaned_data
+        return cleaned_data
     
     def submit(self):
         user_id = self.cleaned_data['user_id']
