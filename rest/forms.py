@@ -104,7 +104,6 @@ class UserGetListForm(forms.Form):
 class UserGetSingleForm(forms.Form):
     user_id = forms.CharField(required=True)
     
-    
     def clean(self):
         try:
             self.cleaned_data['user_id'] = UUID(self.cleaned_data['user_id'])
@@ -140,18 +139,15 @@ class UserPutForm(forms.Form):
         except ValueError:
             raise UserNotFoundException()
         
-        for key, value in cleaned_data.items():
-            if not value and key in self.initial:
-                if self.initial != None:
-                    cleaned_data[key] = self.initial[key]
-                else:
-                    del cleaned_data[key]
+        if not cleaned_data['email']: cleaned_data['email'] = 'poop'
         
         return cleaned_data
     
     def submit(self):
         user_id = self.cleaned_data['user_id']
         del self.cleaned_data['user_id']
+        
+        return self.cleaned_data
         
         # get the original user
         try:
@@ -174,8 +170,6 @@ class UserPutForm(forms.Form):
         
         user.update(self.cleaned_data)
         user.save()
-        
-        return self.cleaned_data
         
         return UserSerializer(user).data
     
