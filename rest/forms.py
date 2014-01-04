@@ -150,8 +150,6 @@ class UserPutForm(forms.Form):
         user_id = self.cleaned_data['user_id']
         del self.cleaned_data['user_id']
         
-        return self.cleaned_data
-        
         # get the original user
         try:
             user = User.get(user_id)
