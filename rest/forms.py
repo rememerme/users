@@ -126,10 +126,10 @@ class UserGetSingleForm(forms.Form):
         return UserSerializer(ans).data
     
 class UserPutForm(forms.Form):
-    username = forms.CharField(required=False, initial=None)
-    email = forms.EmailField(required=False, initial=None)
-    password = forms.CharField(required=False, initial=None)
-    facebook = forms.BooleanField(required=False, initial=None)
+    username = forms.CharField(required=False)
+    email = forms.EmailField(required=False)
+    password = forms.CharField(required=False)
+    facebook = forms.BooleanField(required=False)
     user_id = forms.CharField(required=True)
     
     def clean(self):
@@ -139,7 +139,7 @@ class UserPutForm(forms.Form):
         except ValueError:
             raise UserNotFoundException()
         
-        if not cleaned_data['email']: cleaned_data['email'] = 'poop'
+        if not cleaned_data['email']: del cleaned_data['email']
         
         return cleaned_data
     
