@@ -15,8 +15,7 @@ import site
 site.addsitedir('/virtualenv/django-cassa-env/local/lib/python2.7/site-packages')
 
 # Add the projevct onto the syspath
-sys.path.append('/env/users')
-sys.path.append('/env/users/users')
+sys.path.append('/env')
 
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "users.settings")
 
