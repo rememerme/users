@@ -9,7 +9,7 @@ from rest_framework import status
 import pycassa
 from django.conf import settings
 from rest.forms import UserGetListForm, UserPostForm, UserPutForm, UserGetSingleForm
-from rest.exceptions import BadRequestException
+from rest.exceptions import BadRequestException, NotImplementedException
 
 class UsersListView(APIView):
     '''
@@ -71,4 +71,9 @@ class UsersSingleView(APIView):
             return Response(form.submit())
         else:
             raise BadRequestException()
-    
+        
+    def delete(self, request, user_id):
+        '''
+            Used to delete a user making it inactive.
+        '''
+        raise NotImplementedException()
