@@ -7,12 +7,12 @@
     @author: Andrew Oberlin
 '''
 from django import forms
-from users.util import getLimit
+from rememerme.users.config.util import getLimit
 import bcrypt
-from models import User
-from users import util
-from rest.exceptions import UserConflictException, UserNotFoundException, UserAuthorizationException
-from rest.serializers import UserSerializer
+from rememerme.users.models import User
+from rememerme.users.config import util
+from rememerme.users.rest.exceptions import UserConflictException, UserNotFoundException
+from rememerme.users.serializers import UserSerializer
 from uuid import UUID
 from pycassa.cassandra.ttypes import NotFoundException as CassaNotFoundException
 
@@ -30,7 +30,7 @@ class UserPostForm(forms.Form):
         self.cleaned_data['active'] = True
         self.cleaned_data['facebook'] = self.cleaned_data['facebook'] if 'facebook' in self.cleaned_data else False
         self.cleaned_data['salt'] = bcrypt.gensalt()
-        self.cleaned_data['password'] = util.hash_password(self.cleaned_data['password'], self.cleaned_data['salt'])
+        self.cleaned_data['password'] = User.hash_password(self.cleaned_data['password'], self.cleaned_data['salt'])
         return self.cleaned_data
     
     '''
@@ -170,7 +170,7 @@ class UserPutForm(forms.Form):
                 raise UserConflictException()
             
         if 'password' in self.cleaned_data:
-            self.cleaned_data['password'] = util.hash_password(self.cleaned_data['password'], user.salt)
+            self.cleaned_data['password'] = User.hash_password(self.cleaned_data['password'], user.salt)
         
         user.update(self.cleaned_data)
         user.save()
