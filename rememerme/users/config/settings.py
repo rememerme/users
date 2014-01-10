@@ -37,7 +37,7 @@ INSTALLED_APPS = (
     #'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
-    'rest'
+    'rememerme.users.rest'
 )
 
 REST_FRAMEWORK = {
@@ -57,9 +57,9 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 )
 
-ROOT_URLCONF = 'config.urls'
+ROOT_URLCONF = 'rememerme.users.config.urls'
 
-WSGI_APPLICATION = 'config.wsgi.application'
+WSGI_APPLICATION = 'rememerme.users.config.wsgi.application'
 
 
 # Database
@@ -92,4 +92,6 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.6/howto/static-files/
 
-STATIC_URL = '/static/'
+STATIC_ROOT = os.path.join(os.path.join(BASE_DIR, 'config'), 'static')
+
+STATIC_URL = '/users/static/'

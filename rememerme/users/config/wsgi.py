@@ -18,7 +18,7 @@ site.addsitedir('/virtualenv/django-cassa-env/local/lib/python2.7/site-packages'
 sys.path.append('/env/users/users-api')
 sys.path.append('/env/users/users-model')
 
-os.environ.setdefault("DJANGO_SETTINGS_MODULE", "config.settings")
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "rememerme.users.config.settings")
 
 # Activate teh users-env virtual env
 activate_env=os.path.expanduser("/virtualenv/django-cassa-env/bin/activate_this.py")
