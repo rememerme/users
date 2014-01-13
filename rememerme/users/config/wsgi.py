@@ -12,7 +12,7 @@ import sys
 import site
 
 # Add the site-packages of the chosen virtualenv to work with
-site.addsitedir('/virtualenv/django-cassa-env/local/lib/python2.7/site-packages')
+site.addsitedir('/virtualenv/users-api-env/local/lib/python2.7/site-packages')
 
 # Add the projevct onto the syspath
 sys.path.append('/env/users/users-api')
@@ -21,7 +21,7 @@ sys.path.append('/env/users/users-model')
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "rememerme.users.config.settings")
 
 # Activate teh users-env virtual env
-activate_env=os.path.expanduser("/virtualenv/django-cassa-env/bin/activate_this.py")
+activate_env=os.path.expanduser("/virtualenv/users-api-env/bin/activate_this.py")
 execfile(activate_env, dict(__file__=activate_env))
 
 from django.core.wsgi import get_wsgi_application
