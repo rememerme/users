@@ -94,4 +94,4 @@ USE_TZ = True
 
 STATIC_ROOT = os.path.join(os.path.join(BASE_DIR, 'config'), 'static')
 
-STATIC_URL = '/users/static/'
+STATIC_URL = '/static/'
