@@ -57,9 +57,9 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 )
 
-ROOT_URLCONF = 'rememerme.users.config.urls'
+ROOT_URLCONF = 'config.urls'
 
-WSGI_APPLICATION = 'rememerme.users.config.wsgi.application'
+WSGI_APPLICATION = 'config.wsgi.application'
 
 
 # Database

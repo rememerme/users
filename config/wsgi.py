@@ -18,7 +18,7 @@ site.addsitedir('/virtualenv/users-api-env/local/lib/python2.7/site-packages')
 sys.path.append('/env/users/users-api')
 sys.path.append('/env/users/users-model')
 
-os.environ.setdefault("DJANGO_SETTINGS_MODULE", "rememerme.users.config.settings")
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "config.settings")
 
 # Activate teh users-env virtual env
 activate_env=os.path.expanduser("/virtualenv/users-api-env/bin/activate_this.py")

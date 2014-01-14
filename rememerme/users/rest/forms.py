@@ -7,10 +7,10 @@
     @author: Andrew Oberlin
 '''
 from django import forms
-from rememerme.users.config.util import getLimit
+from config.util import getLimit
 import bcrypt
 from rememerme.users.models import User
-from rememerme.users.config import util
+from config import util
 from rememerme.users.rest.exceptions import UserConflictException, UserNotFoundException
 from rememerme.users.serializers import UserSerializer
 from uuid import UUID
