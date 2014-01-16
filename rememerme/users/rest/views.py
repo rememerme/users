@@ -10,8 +10,11 @@ import pycassa
 from django.conf import settings
 from rememerme.users.rest.forms import UserGetListForm, UserPostForm, UserPutForm, UserGetSingleForm
 from rememerme.users.rest.exceptions import BadRequestException, NotImplementedException
+from rest_framework.permissions import IsAuthenticated
 
 class UsersListView(APIView):
+    permission_classes = (IsAuthenticated,)
+
     '''
        Used for searching by properties or listing all users available.
        Also, used to create new users.
@@ -21,6 +24,7 @@ class UsersListView(APIView):
         '''
             Used to search users by username or email.
         '''
+        
         # get the offset and limit query parameters
         form = UserGetListForm(request.QUERY_PARAMS)
         
@@ -42,6 +46,8 @@ class UsersListView(APIView):
             raise BadRequestException()
         
 class UsersSingleView(APIView):
+    permission_classes = (IsAuthenticated, )
+
     '''
        Used for managing user properties, getting specific users and deleting users.
     '''
