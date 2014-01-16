@@ -4,9 +4,6 @@ from django.conf.urls import patterns, include, url
 #admin.autodiscover()
 
 urlpatterns = patterns('',
-    # Examples:
-    # url(r'^$', 'NomNomUsers.views.home', name='home'),
-    # url(r'^blog/', include('blog.urls')),
-
-    url(r'^rest/v1/users', include('rememerme.users.rest.urls')),
+    url(r'^rest/v1/users/docs/', include('rest_framework_swagger.urls')),
+    url(r'^rest/v1/users/', include('rememerme.users.rest.urls'))
 )
