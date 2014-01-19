@@ -10,7 +10,7 @@ class EditOnlyPermission(BasePermission):
     """
 
     def has_permission(self, request, view):
-        return request.method == "POST"
+        return request.method == "POST" or (request.user and request.user.is_authenticated())
 
 class UsersListView(APIView):
     permission_classes = (EditOnlyPermission,)
