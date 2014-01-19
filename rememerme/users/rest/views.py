@@ -2,10 +2,18 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rememerme.users.rest.forms import UserGetListForm, UserPostForm, UserPutForm, UserGetSingleForm
 from rememerme.users.rest.exceptions import BadRequestException, NotImplementedException
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated, BasePermission
+
+class EditOnlyPermission(BasePermission):
+    """
+    Global permission check for allowing anyone to create a user.
+    """
+
+    def has_permission(self, request, view):
+        return request.method == "POST"
 
 class UsersListView(APIView):
-    permission_classes = (IsAuthenticated,)
+    permission_classes = (EditOnlyPermission,)
 
     '''
        Used for searching by properties or listing all users available.
@@ -25,7 +33,6 @@ class UsersListView(APIView):
         else:
             raise BadRequestException()
             
-
     def post(self, request):
         '''
             Used to create a new user.
