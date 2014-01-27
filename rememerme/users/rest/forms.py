@@ -10,7 +10,6 @@ from django import forms
 from config.util import getLimit
 import bcrypt
 from rememerme.users.models import User
-from config import util
 from rememerme.users.rest.exceptions import UserConflictException, UserNotFoundException
 from rememerme.users.serializers import UserSerializer
 from uuid import UUID
